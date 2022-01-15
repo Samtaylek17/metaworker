@@ -1,18 +1,39 @@
-import React, { FC, MouseEvent } from 'react';
+import React, { FC } from 'react';
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
 import { Upload, message } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
+import { addFile } from '../../slice/fileSlice';
 
 const Uploader: FC = () => {
   const { Dragger } = Upload;
+
+  const dispatch = useDispatch();
+
+  const handleFileChange = async (fileList: Record<string, any>): Promise<void> => {
+    const { status } = fileList.file;
+    if (status !== 'uploading') {
+      console.log();
+    }
+  };
 
   const props = {
     name: 'file',
     multiple: true,
     action: 'https://file.io',
-    onChange(info: any) {
+    async onChange(info: Record<string, any>) {
       const { status } = info.file;
       if (status !== 'uploading') {
-        console.log(info.file, info.fileList);
+        if (Object.entries(info.file.originFileObj).length > 0) {
+          const formData = new FormData();
+          formData.append('file', info.file.originFileObj);
+          const result = await axios.post('https://file.io', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+          });
+          if (result.data) {
+            dispatch(addFile(result.data.link));
+          }
+        }
       }
 
       if (status === 'done') {

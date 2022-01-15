@@ -13,6 +13,8 @@ import storage from 'redux-persist/lib/storage';
 import { createBlacklistFilter } from 'redux-persist-transform-filter';
 import rootReducer from './rootReducer';
 
+const newRootReducer = require('./rootReducer').default;
+
 const saveSubsetBlacklistFilter = createBlacklistFilter('user', ['isLoading', 'error']);
 
 const persistConfig = { key: 'root', storage, transforms: [saveSubsetBlacklistFilter] };
@@ -31,8 +33,6 @@ const store = configureStore({
 
 if (process.env.NODE_ENV === 'development' && (module as any).hot) {
   (module as any).hot.accept('./rootReducer', () => {
-    // eslint-disable-next-line global-require
-    const newRootReducer = require('./rootReducer').default;
     store.replaceReducer(persistReducer(persistConfig, newRootReducer));
   });
 }

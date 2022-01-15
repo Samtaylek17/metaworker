@@ -1,7 +1,9 @@
 import { combineReducers } from '@reduxjs/toolkit';
-// import fileSlice from '../slices/fileSlice';
+import fileSlice from '../slice/fileSlice';
 
-const rootReducer = combineReducers({});
+const rootReducer = combineReducers({
+  files: fileSlice,
+});
 
 export default rootReducer;
 

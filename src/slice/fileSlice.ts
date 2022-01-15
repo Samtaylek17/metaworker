@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-
+import { message } from 'antd';
 import { convertFile, fetchFile, getAllFiles } from '../api/endpoints';
 
 interface FileInitialState {
@@ -48,8 +48,8 @@ const files = createSlice({
     getFilesFailure: loadingFailed,
     convertFileStart: startLoading,
     convertFileSuccess(state: FileInitialState, action) {
-      state.fileList.unshift(action.payload.data.file);
-      state.currentFile = action.payload.data.file;
+      state.fileList.unshift(action.payload.data);
+      state.currentFile = action.payload.data;
       state.isLoading = false;
       state.error = null;
     },
@@ -79,7 +79,16 @@ interface IAction {
 export const addFile = (url: string) => async (dispatch: (arg: IAction) => void) => {
   try {
     dispatch(convertFileStart());
+    const result = await convertFile(url);
+    console.log(result);
+    if (result.data) {
+      const response = await fetchFile(result.data.uuid);
+      dispatch(convertFileSuccess(response.data));
+    }
   } catch (err: any) {
-    dispatch(convertFileFailure(err.toString()));
+    message.error(err.toString());
+    dispatch(convertFileFailure(err.response.data.toString()));
   }
 };
+
+// export const;
