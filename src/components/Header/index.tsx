@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { FC, useState } from 'react';
 
-const Header = () => {
+const Header: FC = () => {
   const [toggleButton, setToggleButton] = useState(false);
 
   return (
