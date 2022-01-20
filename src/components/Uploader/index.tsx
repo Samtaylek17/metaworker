@@ -1,8 +1,10 @@
-import React, { FC } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { Upload, message } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
+import { io, Socket } from 'socket.io-client';
+
 import { addFile } from '../../slice/fileSlice';
 
 const Uploader: FC = () => {
@@ -10,12 +12,29 @@ const Uploader: FC = () => {
 
   const dispatch = useDispatch();
 
-  const handleFileChange = async (fileList: Record<string, any>): Promise<void> => {
-    const { status } = fileList.file;
-    if (status !== 'uploading') {
-      console.log();
-    }
-  };
+  const [socket, setSocket] = useState<any>(null);
+
+  useEffect(() => {
+    const newSocket = io('https://metaworker.herokuapp.com');
+    setSocket(newSocket);
+    return () => {
+      socket.close();
+    };
+    // socket.on('connect', (): void => {
+    //   console.log(socket.id);
+
+    //   socket.on('completed', (arg) => {
+    //     console.log('status: ', arg);
+    //   });
+    // });
+    // socket.on('event', (data): void => {
+    //   console.log(data);
+    // });
+
+    // socket.on('disconnect', () => {
+    //   console.log('Disconnected!');
+    // });
+  }, [setSocket]);
 
   const props = {
     name: 'file',
@@ -31,7 +50,7 @@ const Uploader: FC = () => {
             headers: { 'Content-Type': 'multipart/form-data' },
           });
           if (result.data) {
-            dispatch(addFile(result.data.link));
+            dispatch(addFile(result.data.link, socket));
           }
         }
       }
@@ -50,7 +69,7 @@ const Uploader: FC = () => {
   const { name, multiple, action, onChange, onDrop } = props;
 
   return (
-    <section className="bg-gray-900 py-12">
+    <section className="dark:bg-gray-900 bg-white py-12">
       <div className="max-w-4xl mx-auto">
         <div className="container px-8">
           <Dragger

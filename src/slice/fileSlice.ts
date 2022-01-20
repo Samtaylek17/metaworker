@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { message } from 'antd';
+import { io } from 'socket.io-client';
 import { convertFile, fetchFile, getAllFiles } from '../api/endpoints';
 
 interface FileInitialState {
@@ -76,15 +77,32 @@ interface IAction {
   payload?: Record<string, unknown> | null;
 }
 
-export const addFile = (url: string) => async (dispatch: (arg: IAction) => void) => {
+export const addFile = (url: string, socket: any) => async (dispatch: (arg: IAction) => void) => {
   try {
+    // const socket = io('https://metaworker.herokuapp.com');
+    // socket.on('connect', (): void => {
+    //   console.log('Connected!');
+
+    //   socket.on('completed', (arg) => {
+    //     console.log('status: ', arg);
+    //   });
+    // });
+
     dispatch(convertFileStart());
-    const result = await convertFile(url);
-    console.log(result);
-    if (result.data) {
-      const response = await fetchFile(result.data.uuid);
-      dispatch(convertFileSuccess(response.data));
-    }
+    socket.on('connect', async () => {
+      const result = await convertFile(url, socket.socket.engine.id);
+      console.log(socket.id);
+    });
+
+    // socket.on('completed', async () => {
+    //   const response = await fetchFile(result.data.uuid);
+    // });
+    // // const result = await convertFile(url);
+    // // console.log(result);
+    // if (result.data) {
+    //   const response = await fetchFile(result.data.uuid);
+    //   dispatch(convertFileSuccess(response.data));
+    // }
   } catch (err: any) {
     message.error(err.toString());
     dispatch(convertFileFailure(err.response.data.toString()));
