@@ -1,9 +1,9 @@
 /* eslint-disable camelcase */
 import api from './api';
 
-export async function convertFile(url: string, socket_id: string) {
+export async function convertFile(url: string) {
   const apiUrl = `${process.env.REACT_APP_API_URL}/convert`;
-  return api.post(apiUrl, { url, type: 'meta', socket_id });
+  return api.post(apiUrl, { url, type: 'meta' });
 }
 
 export async function fetchFile(uuid: string) {

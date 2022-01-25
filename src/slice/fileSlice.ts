@@ -4,14 +4,14 @@ import { io } from 'socket.io-client';
 import { convertFile, fetchFile, getAllFiles } from '../api/endpoints';
 
 interface FileInitialState {
-  currentFile: Record<string, unknown> | null;
-  fileList: Record<string, any>[];
+  currentFile: any;
+  fileList: any[];
   isLoading: boolean;
-  error: Record<string, unknown> | null;
+  error: Record<string, any> | null;
 }
 
 const fileInitialState = {
-  currentFile: null,
+  currentFile: {},
   fileList: [],
   isLoading: false,
   error: null,
@@ -21,10 +21,7 @@ function startLoading(state: FileInitialState) {
   state.isLoading = true;
 }
 
-function loadingFailed(
-  state: FileInitialState,
-  action: { payload: Record<string, unknown> | null }
-) {
+function loadingFailed(state: FileInitialState, action: { payload: Record<string, any> | null }) {
   state.isLoading = false;
   state.error = action.payload;
 }
@@ -77,7 +74,7 @@ interface IAction {
   payload?: Record<string, unknown> | null;
 }
 
-export const addFile = (url: string, socket: any) => async (dispatch: (arg: IAction) => void) => {
+export const addFile = (url: string) => async (dispatch: (arg: IAction) => void) => {
   try {
     // const socket = io('https://metaworker.herokuapp.com');
     // socket.on('connect', (): void => {
@@ -89,10 +86,15 @@ export const addFile = (url: string, socket: any) => async (dispatch: (arg: IAct
     // });
 
     dispatch(convertFileStart());
-    socket.on('connect', async () => {
-      const result = await convertFile(url, socket.socket.engine.id);
-      console.log(socket.id);
-    });
+    // socket.on('connect', async () => {
+    const result = await convertFile(url);
+    if (result.data) {
+      setTimeout(async () => {
+        const response = await fetchFile(result.data.uuid);
+        dispatch(convertFileSuccess(response.data));
+      }, 5000);
+    }
+    // });
 
     // socket.on('completed', async () => {
     //   const response = await fetchFile(result.data.uuid);

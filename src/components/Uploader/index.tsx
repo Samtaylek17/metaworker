@@ -3,7 +3,6 @@ import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { Upload, message } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
-import { io, Socket } from 'socket.io-client';
 
 import { addFile } from '../../slice/fileSlice';
 
@@ -11,30 +10,6 @@ const Uploader: FC = () => {
   const { Dragger } = Upload;
 
   const dispatch = useDispatch();
-
-  const [socket, setSocket] = useState<any>(null);
-
-  useEffect(() => {
-    const newSocket = io('https://metaworker.herokuapp.com');
-    setSocket(newSocket);
-    return () => {
-      socket.close();
-    };
-    // socket.on('connect', (): void => {
-    //   console.log(socket.id);
-
-    //   socket.on('completed', (arg) => {
-    //     console.log('status: ', arg);
-    //   });
-    // });
-    // socket.on('event', (data): void => {
-    //   console.log(data);
-    // });
-
-    // socket.on('disconnect', () => {
-    //   console.log('Disconnected!');
-    // });
-  }, [setSocket]);
 
   const props = {
     name: 'file',
@@ -50,7 +25,7 @@ const Uploader: FC = () => {
             headers: { 'Content-Type': 'multipart/form-data' },
           });
           if (result.data) {
-            dispatch(addFile(result.data.link, socket));
+            dispatch(addFile(result.data.link));
           }
         }
       }
