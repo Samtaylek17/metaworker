@@ -11,7 +11,8 @@ const Hero: FC = () => (
           loop
           strings={[
             'Upload your files and get report in seconds',
-            'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
+            'Get detailed analysis of your files in seconds.',
+            'No security flaws, as we do not store your files.',
           ]}
         />
       </h1>
