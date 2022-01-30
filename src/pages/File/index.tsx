@@ -81,9 +81,6 @@ const File: FC = () => {
                 <li key={nanoid()} className="text-xl py-4">
                   Probe Score: {format.probe_score}
                 </li>
-                <li key={nanoid()} className="text-xl py-4">
-                  Tags: {format.tags}
-                </li>
               </ul>
             </div>
           </div>
