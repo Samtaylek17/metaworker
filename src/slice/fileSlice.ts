@@ -48,7 +48,7 @@ const files = createSlice({
     getFileStart: startLoading,
     getFilesStart: startLoading,
     getFileSuccess(state, { payload }) {
-      state.currentFile = payload;
+      state.currentFile = payload.data;
       state.streams = payload.data.result.streams;
       state.format = payload.data.result.format;
       state.isLoading = false;

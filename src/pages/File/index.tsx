@@ -15,7 +15,7 @@ const File: FC = () => {
     dispatch(getCurrentFile(id as string));
   }, []);
 
-  const { currentFile, streams, format } = useSelector((state: RootState) => state.files);
+  const { streams, format } = useSelector((state: RootState) => state.files);
 
   return (
     <>
