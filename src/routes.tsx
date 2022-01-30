@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 const Home = lazy(() => import('./pages/Home'));
+const File = lazy(() => import('./pages/File'));
 
 const AppRoutes = () => {
   const Spinner = () => (
@@ -15,6 +16,7 @@ const AppRoutes = () => {
       <Suspense fallback={<Spinner />}>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/:id" element={<File />} />
         </Routes>
       </Suspense>
     </BrowserRouter>

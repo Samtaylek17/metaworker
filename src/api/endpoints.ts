@@ -12,6 +12,6 @@ export async function fetchFile(uuid: string) {
 }
 
 export async function getAllFiles() {
-  const url = `${process.env.REACT_APP_API}/total`;
+  const url = `${process.env.REACT_APP_API_URL}/total`;
   return api.get(url);
 }

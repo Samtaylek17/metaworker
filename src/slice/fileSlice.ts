@@ -1,10 +1,23 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { message } from 'antd';
-import { io } from 'socket.io-client';
 import { convertFile, fetchFile, getAllFiles } from '../api/endpoints';
+
+interface FormatState {
+  filename: string;
+  nb_streams: number;
+  nb_programs: number;
+  format_name: string;
+  format_long_name: string;
+  start_time: string;
+  duration: string;
+  probe_score: number;
+  tags: any;
+}
 
 interface FileInitialState {
   currentFile: any;
+  streams: any | null;
+  format: Record<string, any> | null;
   fileList: any[];
   isLoading: boolean;
   error: Record<string, any> | null;
@@ -15,6 +28,8 @@ const fileInitialState = {
   fileList: [],
   isLoading: false,
   error: null,
+  streams: [],
+  format: {} as FormatState,
 };
 
 function startLoading(state: FileInitialState) {
@@ -34,6 +49,8 @@ const files = createSlice({
     getFilesStart: startLoading,
     getFileSuccess(state, { payload }) {
       state.currentFile = payload;
+      state.streams = payload.data.result.streams;
+      state.format = payload.data.result.format;
       state.isLoading = false;
       state.error = null;
     },
@@ -76,17 +93,7 @@ interface IAction {
 
 export const addFile = (url: string) => async (dispatch: (arg: IAction) => void) => {
   try {
-    // const socket = io('https://metaworker.herokuapp.com');
-    // socket.on('connect', (): void => {
-    //   console.log('Connected!');
-
-    //   socket.on('completed', (arg) => {
-    //     console.log('status: ', arg);
-    //   });
-    // });
-
     dispatch(convertFileStart());
-    // socket.on('connect', async () => {
     const result = await convertFile(url);
     if (result.data) {
       setTimeout(async () => {
@@ -94,21 +101,34 @@ export const addFile = (url: string) => async (dispatch: (arg: IAction) => void)
         dispatch(convertFileSuccess(response.data));
       }, 5000);
     }
-    // });
-
-    // socket.on('completed', async () => {
-    //   const response = await fetchFile(result.data.uuid);
-    // });
-    // // const result = await convertFile(url);
-    // // console.log(result);
-    // if (result.data) {
-    //   const response = await fetchFile(result.data.uuid);
-    //   dispatch(convertFileSuccess(response.data));
-    // }
-  } catch (err: any) {
-    message.error(err.toString());
-    dispatch(convertFileFailure(err.response.data.toString()));
+  } catch (error: any) {
+    message.error(error.toString());
+    dispatch(convertFileFailure(error.response.data.toString()));
   }
 };
 
-// export const;
+export const getCurrentFile = (uuid: string) => async (dispatch: (arg: IAction) => void) => {
+  try {
+    dispatch(getFileStart());
+
+    const file = await fetchFile(uuid);
+    dispatch(getFileSuccess(file.data));
+  } catch (error: any) {
+    message.error(error.toString());
+    dispatch(getFileFailure(error.response.data.toString()));
+  }
+};
+
+export const getTotalFiles = () => async (dispatch: (arg: IAction) => void) => {
+  try {
+    dispatch(getFilesStart());
+
+    const response = await getAllFiles();
+    console.log(response);
+
+    dispatch(getFilesSuccess(response.data));
+  } catch (error: any) {
+    message.error(error.toString());
+    dispatch(getFilesFailure(error.response.data.toString()));
+  }
+};

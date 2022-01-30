@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from 'react';
+import React, { FC } from 'react';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { Upload, message } from 'antd';
@@ -36,24 +36,15 @@ const Uploader: FC = () => {
         message.error(`${info.file.name} file upload failed.`);
       }
     },
-    onDrop(e: any) {
-      console.log('Dropped files', e.dataTransfer.files);
-    },
   };
 
-  const { name, multiple, action, onChange, onDrop } = props;
+  const { name, multiple, action, onChange } = props;
 
   return (
     <section className="dark:bg-gray-900 bg-white py-12">
       <div className="max-w-4xl mx-auto">
         <div className="container px-8">
-          <Dragger
-            name={name}
-            multiple={multiple}
-            action={action}
-            onChange={onChange}
-            onDrop={onDrop}
-          >
+          <Dragger name={name} multiple={multiple} action={action} onChange={onChange}>
             <p className="ant-upload-drag-icon">
               <InboxOutlined />
             </p>
