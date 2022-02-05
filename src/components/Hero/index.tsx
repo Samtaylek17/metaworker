@@ -10,19 +10,16 @@ const Hero: FC = () => (
           backSpeed={50}
           loop
           strings={[
-            'Upload your files and get report in seconds',
+            'Upload your media files and get report in seconds',
             'Get detailed analysis of your files in seconds.',
             'No security flaws, as we do not store your files.',
           ]}
         />
       </h1>
       <p className="mt-6 text-lg text-gray-600 mb-0 text-center max-w-3xl mx-auto dark:text-gray-400">
-        Lorem ipsum dolor sit amet, consect{' '}
-        <code className="font-mono font-medium text-sky-500 dark:text-sky-400">Lorem</code>,{' '}
-        <code className="font-mono font-medium text-sky-500 dark:text-sky-400">pt-4</code>,{' '}
-        <code className="font-mono font-medium text-sky-500 dark:text-sky-400">text-center</code>{' '}
-        and <code className="font-mono font-medium text-sky-500 dark:text-sky-400">rotate-90</code>{' '}
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Porro ipsum rem nam
+        Get all the details of your{' '}
+        <code className="font-mono font-medium text-sky-500 dark:text-sky-400">media files</code>,{' '}
+        in one click.
       </p>
     </div>
   </section>
